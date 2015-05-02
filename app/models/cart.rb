@@ -4,10 +4,14 @@ class Cart
 	attr_reader :items
 
 	def self.build_from_hash hash
-	items = hash["cart"]["items"].map do |item_data|
+	items = if hash["cart"] then
+		hash["cart"]["items"].map do |item_data|
 	CartItem.new item_data["product_id"], item_data["quantity"]	
 		end
-	new items
+	else
+		[]
+	end
+		new items
 	end
 
 	# El constructor de la clase creara para cada instancia una variable de instancia @items  
@@ -35,6 +39,17 @@ class Cart
 		@items.empty?
 	end
 
+	def count
+		@items.length
+	end
+
+	def show
+	end
+
+	def total_price
+		@items.inject(0){|sum, item| sum + item.total_price}
+	end
+
 	def serialize
 		items = @items.map do |item|
 			{
@@ -44,10 +59,8 @@ class Cart
 		end
 
 		{
-			"cart" => {
-				"items" => items
-			}
-		}
+			"items" => items
+		}		
 	end
 
 end
