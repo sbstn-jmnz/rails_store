@@ -3,9 +3,16 @@ class Cart
 	#El la Clase Cart tendra items
 	attr_reader :items
 
+	def self.build_from_hash hash
+	items = hash["cart"]["items"].map do |item_data|
+	CartItem.new item_data["product_id"], item_data["quantity"]	
+		end
+	new items
+	end
+
 	# El constructor de la clase creara para cada instancia una variable de instancia @items  
-	def initialize
-		@items = []
+	def initialize items = []
+		@items = items
 	end
 	
 	#1- se escribe el metodo add_item para pasar la prueba
@@ -26,6 +33,21 @@ class Cart
 	# se escribe el metodo empty
 	def empty?
 		@items.empty?
+	end
+
+	def serialize
+		items = @items.map do |item|
+			{
+				"product_id" => item.product_id,
+				"quantity" => item.quantity
+			}
+		end
+
+		{
+			"cart" => {
+				"items" => items
+			}
+		}
 	end
 
 end
